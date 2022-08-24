@@ -1,5 +1,4 @@
 import React , {useState,useEffect} from 'react'
-import { Link } from 'react-router-dom';
 import { ReactComponent as ArrowLeft } from '../assets/chevron-left.svg'
 
 const NotePage = ({ match , history }) => {
@@ -9,7 +8,7 @@ const NotePage = ({ match , history }) => {
 
     useEffect(()=>{
         getNote()
-    },[noteId])
+    }, [noteId])
 
     let getNote = async () =>{
         if(noteId === 'new') return
@@ -43,7 +42,7 @@ const NotePage = ({ match , history }) => {
     let deleteNote = async () =>{
         fetch(`/api/notes/${noteId}/delete/`,{
             method:"DELETE",
-            headers:{
+            'headers':{
                 'Content-Type':'application/json'
             }
         })
@@ -61,19 +60,24 @@ const NotePage = ({ match , history }) => {
         history.push('/')
     }
 
-    
+    let handleChange = (value) =>{
+        setNote(note =>({...note,'body':value}))
+        console.log('handle change:',note)
+    }
 
     return (
-        <div className='note'>
-            <div className='note-header'>
+        <div className="note" >
+            <div className="note-header">
                 <h3>
                     <ArrowLeft onClick={handleSubmit} />
                 </h3>
-                {noteId !== 'new' ? 
-                (<button onClick={deleteNote}>Delete</button>) :
-                (<button onClick={handleSubmit}>Done</button>)}
+                {noteId !== 'new' ? (
+                    <button onClick={deleteNote}>Delete</button>
+                ) : (
+                    <button onClick={handleSubmit}>Done</button>
+                )}
             </div>
-            <textarea onChange={(e) =>{setNote({...note,'body':e.target.value})}} defaultValue={note?.body}></textarea>
+            <textarea onChange={(e) => { handleChange(e.target.value) }} value={note?.body}></textarea>
         </div>
     )
 }
